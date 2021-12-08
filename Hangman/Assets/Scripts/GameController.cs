@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         chosenWord = testWords[Random.Range(0, testWords.Length)];
+        Debug.Log(chosenWord);
 
         for (int i = 0; i < chosenWord.Length; i++)
         {
@@ -55,7 +56,16 @@ public class GameController : MonoBehaviour
 
             if (chosenWord.Contains(pressedLetter))
             {
-                
+                int i = chosenWord.IndexOf(pressedLetter);
+                while (i != -1)
+                {
+                    hiddenWord = hiddenWord.Substring(0, i) + pressedLetter + hiddenWord.Substring(i + 1);
+                    chosenWord = chosenWord.Substring(0, i) +      "_"      + chosenWord.Substring(i + 1);
+
+                    i = chosenWord.IndexOf(pressedLetter);
+                }
+
+                wordToFindField.text = hiddenWord;
             }
             else
             {
