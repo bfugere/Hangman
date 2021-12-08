@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class GameController : MonoBehaviour
 {
@@ -9,10 +10,11 @@ public class GameController : MonoBehaviour
     [SerializeField] Text wordToFindField;
     [SerializeField] GameObject winText;
     [SerializeField] GameObject loseText;
+    [SerializeField] GameObject replayButton;
     [SerializeField] GameObject[] hangman;
 
     float time;
-    string[] testWords = { "DOG", "BIRD", "MOUSE", "BIG DOG"};
+    string[] words = File.ReadAllLines(@"Assets/Words/Words.txt");
     string chosenWord;
     string hiddenWord;
     int failedGuesses;
@@ -20,7 +22,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        chosenWord = testWords[Random.Range(0, testWords.Length)];
+        chosenWord = words[Random.Range(0, words.Length)];
         Debug.Log(chosenWord);
 
         for (int i = 0; i < chosenWord.Length; i++)
@@ -58,7 +60,6 @@ public class GameController : MonoBehaviour
         if (e.type == EventType.KeyDown && e.keyCode.ToString().Length == 1)
         {
             string pressedLetter = e.keyCode.ToString();
-            Debug.Log(pressedLetter + " was pressed.");
 
             if (chosenWord.Contains(pressedLetter))
             {
@@ -75,19 +76,24 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                hangman[failedGuesses].SetActive(true);
-                failedGuesses++;
+                if (failedGuesses < hangman.Length)
+                {
+                    hangman[failedGuesses].SetActive(true);
+                    failedGuesses++;
+                }
             }
 
             if (failedGuesses == hangman.Length)
             {
                 loseText.SetActive(true);
+                replayButton.SetActive(true);
                 gameOver = true;
             }
 
-            if (!hiddenWord.Contains("_"))
+            if (!hiddenWord.Contains("_") && !gameOver)
             {
                 winText.SetActive(true);
+                replayButton.SetActive(true);
                 gameOver = true;
             }
         }
