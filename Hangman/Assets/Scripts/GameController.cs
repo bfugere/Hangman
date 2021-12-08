@@ -7,11 +7,16 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] Text timeField;
     [SerializeField] Text wordToFindField;
+    [SerializeField] GameObject winText;
+    [SerializeField] GameObject loseText;
+    [SerializeField] GameObject[] hangman;
 
     float time;
     string[] testWords = { "DOG", "BIRD", "MOUSE", "BIG DOG"};
     string chosenWord;
     string hiddenWord;
+    int failedGuesses;
+    bool gameOver = false;
 
     void Start()
     {
@@ -32,7 +37,8 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        Timer();
+        if (gameOver == false)
+            Timer();
     }
 
     void Timer()
@@ -69,7 +75,20 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                hangman[failedGuesses].SetActive(true);
+                failedGuesses++;
+            }
 
+            if (failedGuesses == hangman.Length)
+            {
+                loseText.SetActive(true);
+                gameOver = true;
+            }
+
+            if (!hiddenWord.Contains("_"))
+            {
+                winText.SetActive(true);
+                gameOver = true;
             }
         }
     }
